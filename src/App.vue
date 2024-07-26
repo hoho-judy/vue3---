@@ -2,8 +2,10 @@
   <!-- 조건식 v-if 에 따라 상세정보 모달창이 보이고 안보이고 -->
   <div class="black-bg" v-if="modalOpen == true">
     <div class="white-bg">
-       <h4>상세페이지</h4>
-       <p>상세페이지 내용</p>
+       <h4>{{ roomInfos[clickedId].title }}</h4>
+       <img :src="roomInfos[clickedId].image" :alt="roomInfos[clickedId].title" class="view-img">
+       <p>{{ roomInfos[clickedId].content }}</p>
+       <p>{{ roomInfos[clickedId].price }} 만원</p>
        <button @click="modalOpen = false">닫기</button>
     </div>
   </div>
@@ -16,59 +18,51 @@
   <!-- 태그 안 속성에 바인딩하려면 속성명 앞에 콜론을 붙임 -->
   <!-- v-on:은 @로 대체 가능 -->
   <!-- v-on:click, v-on:mouseover, v-on:drag... -->
-  <div v-for="(roomInfo, i) in roomInfos" :key="i">
-    <img :src="roomInfo.imgSrc" alt="" class="room-img">
-    <h4 :style="textColor" @click="modalOpen = true">{{ roomInfo.name }}</h4>
+  <div v-for="roomInfo in roomInfos" :key="roomInfo.id">
+    <img :src="roomInfo.image" :alt="roomInfo.title" class="room-img">
+    <h4 :style="textColor" @click="modalOpen = true; clickedId = roomInfo.id">{{ roomInfo.title }}</h4>
     <p>{{ roomInfo.price }} 만원</p>
     <button v-on:click="roomInfo.reportCnt++">허위매물신고</button><span> 신고수 : {{ roomInfo.reportCnt }}</span>
   </div>
- 
-  <!-- 
-  <div>
-    <h4 :style="textColor">{{ products[0] }}</h4> 
-    <p>{{ price[0] }} 만원</p>
-    <button @click="increase">허위매물신고</button><span> 신고수 : {{ repoortCnt }}</span>
-  </div>
-  <div>
-    <h4 :style="textColor">{{ products[1] }}</h4>
-    <p>{{ price[1] }} 만원</p> 
-  </div>
-  <div>
-    <h4 :style="textColor">{{ products[2] }}</h4>
-    <p>{{ price[2] }} 만원</p>
-  </div>  -->
+
 </template>
 
 <script>
+import roomDatas from './data.js';
+
+roomDatas.map(item => item.reportCnt = 0);
+
 export default {
   name: 'App',
   // 데이터 저장소(Object로 작성)
   data() {
     return {
       modalOpen: false,
-      textColor: "color: green",
+      textColor: "color: darkslateblue",
       products : ['역삼동원룸', '천호동원룸', '마곡동원룸'],
       price: [650, 7700, 7700],
-      roomInfos: [
-        {
-           name:'역삼동원룸',
-           price: 650,
-           reportCnt : 0,
-           imgSrc: require('./assets/room0.jpg'),
-        },
-        {
-           name:'천호동원룸',
-           price: 7700,
-           reportCnt : 0,
-           imgSrc: require('./assets/room1.jpg'),
-        },
-        {
-           name:'마곡동원룸',
-           price: 1220,
-           reportCnt : 0,
-           imgSrc: require('./assets/room2.jpg'),
-        },
-      ],
+      roomInfos : roomDatas,
+      clickedId: 0,
+      // roomInfos: [
+      //   {
+      //      name:'역삼동원룸',
+      //      price: 650,
+      //      reportCnt : 0,
+      //      imgSrc: require('./assets/room0.jpg'),
+      //   },
+      //   {
+      //      name:'천호동원룸',
+      //      price: 7700,
+      //      reportCnt : 0,
+      //      imgSrc: require('./assets/room1.jpg'),
+      //   },
+      //   {
+      //      name:'마곡동원룸',
+      //      price: 1220,
+      //      reportCnt : 0,
+      //      imgSrc: require('./assets/room2.jpg'),
+      //   },
+      // ],
       menus: ['Home', 'Products', 'About'],
       reportCnt : 0,
     }
@@ -129,6 +123,10 @@ div{
   background: white;
   border-radius: 8px;
   padding: 20px;
+}
+ 
+.view-img{
+  width: 50%;
 }
 
 </style>
